@@ -236,6 +236,13 @@ function ext_check_CSR (csrno : bits(12), p : Privilege, isWrite : bool) -> bool
     0xC80 => not(isWrite), // cycleh
     0xC81 => not(isWrite), // timeh
     0xC82 => not(isWrite), // instreth
+    0x008 => haveVExt(),                // vstart
+    0x009 => haveVExt(),                // vxsat
+    0x00A => haveVExt(),                // vxrm
+    0x00F => haveVExt(),                // vcsr
+    0xC20 => haveVExt() & not(isWrite), // vl
+    0xC21 => haveVExt() & not(isWrite), // vtype
+    0xC22 => haveVExt() & not(isWrite), // vlenb
     _     => false
   } else {
     true
