@@ -243,6 +243,9 @@ function ext_check_CSR (csrno : bits(12), p : Privilege, isWrite : bool) -> bool
     0xC20 => haveVExt() & not(isWrite), // vl
     0xC21 => haveVExt() & not(isWrite), // vtype
     0xC22 => haveVExt() & not(isWrite), // vlenb
+    0x001 => haveFExt() | haveDExt(),   // fflags
+    0x002 => haveFExt() | haveDExt(),   // frm
+    0x003 => haveFExt() | haveDExt(),   // fcsr
     _     => false
   } else {
     true

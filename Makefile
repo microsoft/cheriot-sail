@@ -31,7 +31,13 @@ SAIL_DEFAULT_INST = $(SAIL_RISCV_MODEL_DIR)/riscv_insts_base.sail \
                     $(SAIL_CHERI_MODEL_DIR)/cheri_insts_begin.sail \
                     $(SAIL_CHERI_MODEL_DIR)/cheri_insts.sail \
                     $(SAIL_CHERI_MODEL_DIR)/cheri_insts_cext.sail \
-                    $(SAIL_CHERI_MODEL_DIR)/cheri_insts_end.sail
+                    $(SAIL_CHERI_MODEL_DIR)/cheri_insts_end.sail \
+                    $(SAIL_RISCV_MODEL_DIR)/riscv_insts_fext.sail \
+                    $(SAIL_RISCV_MODEL_DIR)/riscv_insts_cfext.sail \
+                    $(SAIL_RISCV_MODEL_DIR)/riscv_insts_dext.sail \
+                    $(SAIL_RISCV_MODEL_DIR)/riscv_insts_zfh.sail \
+                    $(SAIL_RISCV_MODEL_DIR)/riscv_insts_zfa.sail \
+
 # $(SAIL_FD_INST) \
 # $(SAIL_RISCV_MODEL_DIR)/riscv_insts_aext.sail
 SAIL_SEQ_INST  = $(SAIL_DEFAULT_INST) $(SAIL_RISCV_MODEL_DIR)/riscv_jalr_seq.sail
@@ -46,24 +52,24 @@ SAIL_SYS_SRCS += $(SAIL_RISCV_MODEL_DIR)/riscv_vext_control.sail
 SAIL_SYS_SRCS += $(SAIL_CHERI_MODEL_DIR)/cheri_sys_exceptions.sail
 SAIL_SYS_SRCS += $(SAIL_RISCV_MODEL_DIR)/riscv_sync_exception.sail
 SAIL_SYS_SRCS += $(SAIL_RISCV_MODEL_DIR)/riscv_next_control.sail
-# SAIL_SYS_SRCS += $(SAIL_RISCV_MODEL_DIR)/riscv_softfloat_interface.sail
-# SAIL_SYS_SRCS += $(SAIL_RISCV_MODEL_DIR)/riscv_fdext_regs.sail
-# SAIL_SYS_SRCS += $(SAIL_RISCV_MODEL_DIR)/riscv_fdext_control.sail
+SAIL_SYS_SRCS += $(SAIL_RISCV_MODEL_DIR)/riscv_softfloat_interface.sail
+SAIL_SYS_SRCS += $(SAIL_RISCV_MODEL_DIR)/riscv_fdext_regs.sail
+SAIL_SYS_SRCS += $(SAIL_RISCV_MODEL_DIR)/riscv_fdext_control.sail
 SAIL_SYS_SRCS += $(SAIL_RISCV_MODEL_DIR)/riscv_csr_ext.sail
 SAIL_SYS_SRCS += $(SAIL_RISCV_MODEL_DIR)/riscv_sys_control.sail
 SAIL_SYS_SRCS += $(SAIL_CHECK_SRCS)
 
 SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_utils.sail
-# SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_fp_utils.sail
+SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_fp_utils.sail
 SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_vset.sail
 SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_arith.sail
-# SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_fp.sail
+SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_fp.sail
 SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_mem.sail
 SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_mask.sail
 SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_vm.sail
-# SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_fp_vm.sail
+SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_fp_vm.sail
 SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_red.sail
-# SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_fp_red.sail
+SAIL_DEFAULT_INST += $(SAIL_RISCV_MODEL_DIR)/riscv_insts_vext_fp_red.sail
 
 SAIL_RV32_VM_SRCS = $(SAIL_RISCV_MODEL_DIR)/riscv_vmem_sv32.sail \
                     $(SAIL_RISCV_MODEL_DIR)/riscv_vmem_rv32.sail
@@ -87,6 +93,7 @@ PRELUDE = $(SAIL_RISCV_MODEL_DIR)/prelude.sail \
           $(SAIL_RISCV_MODEL_DIR)/prelude_mem.sail
 
 SAIL_REGS_SRCS = $(SAIL_CHERI_MODEL_DIR)/cheri_reg_type.sail \
+                 $(SAIL_RISCV_MODEL_DIR)/riscv_freg_type.sail \
                  $(SAIL_RISCV_MODEL_DIR)/riscv_csr_map.sail \
                  $(SAIL_CHERI_MODEL_DIR)/cheri_scr_map.sail \
                  $(SAIL_CHERI_MODEL_DIR)/cheri_vmem_types.sail \
@@ -181,15 +188,14 @@ BBV_DIR?=../bbv
 
 C_WARNINGS ?=
 #-Wall -Wextra -Wno-unused-label -Wno-unused-parameter -Wno-unused-but-set-variable -Wno-unused-function
-C_INCS = $(addprefix $(SAIL_RISCV_DIR)/c_emulator/,riscv_prelude.h riscv_platform_impl.h riscv_platform.h)
-C_SRCS = $(addprefix $(SAIL_RISCV_DIR)/c_emulator/,riscv_prelude.c riscv_platform_impl.c riscv_platform.c)
+C_INCS = $(addprefix $(SAIL_RISCV_DIR)/c_emulator/,riscv_prelude.h riscv_platform_impl.h riscv_platform.h riscv_softfloat.h)
+C_SRCS = $(addprefix $(SAIL_RISCV_DIR)/c_emulator/,riscv_prelude.c riscv_platform_impl.c riscv_platform.c riscv_softfloat.c)
 
 SOFTFLOAT_DIR    = $(SAIL_RISCV_DIR)/c_emulator/SoftFloat-3e
 SOFTFLOAT_INCDIR = $(SOFTFLOAT_DIR)/source/include
 SOFTFLOAT_LIBDIR = $(SOFTFLOAT_DIR)/build/Linux-RISCV-GCC
 SOFTFLOAT_FLAGS  = -I $(SOFTFLOAT_INCDIR)
-SOFTFLOAT_LIBS   = 
-#$(SOFTFLOAT_LIBDIR)/softfloat.a
+SOFTFLOAT_LIBS   = $(SOFTFLOAT_LIBDIR)/softfloat.a
 SOFTFLOAT_SPECIALIZE_TYPE = RISCV
 
 GMP_FLAGS = $(shell pkg-config --cflags gmp)
